@@ -1,7 +1,7 @@
 
 
 ![Build](https://travis-ci.org/bradbase/python-harvest_apiv2.png?branch=master)
-![Coverage](https://coveralls.io/repos/github/bradbase/python-harvest_apiv2/badge.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/bradbase/python-harvest_apiv2/badge.svg?branch=master)](https://coveralls.io/github/bradbase/python-harvest_apiv2?branch=master)
 ![Version](https://img.shields.io/pypi/v/python-harvest_apiv2.svg?style=flat)
 ![License](https://img.shields.io/pypi/l/python-harvest_apiv2.svg?style=flat)
 ![Versions](https://img.shields.io/pypi/pyversions/python-harvest_apiv2.svg?style=flat)
