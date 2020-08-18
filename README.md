@@ -1,7 +1,9 @@
 
+
 ![Version](https://img.shields.io/pypi/v/python-harvest_apiv2.svg?style=flat)
 ![License](https://img.shields.io/pypi/l/python-harvest_apiv2.svg?style=flat)
 ![Versions](https://img.shields.io/pypi/pyversions/python-harvest_apiv2.svg?style=flat)
+![Build](https://travis-ci.org/bradbase/python-harvest_apiv2.png?branch=master)
 
 ### Installation
 
