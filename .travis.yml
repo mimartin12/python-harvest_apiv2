@@ -7,8 +7,10 @@ matrix:
         - python: 3.8
           env: TOXENV=py38
 install:
-  - pip install tox-travis
+  - pip install tox-travis coveralls
 script:
   - tox
 notifications:
     email: false
+after_success:
+  - coveralls

@@ -10,8 +10,9 @@ except ImportError:
     from distutils.core import setup
 
 TESTS_REQUIRE = [
+    'coverage',
     'pytest',
-    # 'pytest-cov',
+    'pytest-cov',
 ]
 
 # Utility function to read the README file.
