@@ -8,7 +8,7 @@
 Python 3.7 and above:
 
 ```
-pip install "python-harvest-2"
+pip install "python-harvest-apiv2"
 ```
 
 ### Usage
