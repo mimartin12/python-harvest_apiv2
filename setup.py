@@ -9,6 +9,11 @@ try:
 except ImportError:
     from distutils.core import setup
 
+TESTS_REQUIRE = [
+    'pytest',
+    # 'pytest-cov',
+]
+
 # Utility function to read the README file.
 # Used for the long_description.  It's nice, because now 1) we have a top level
 # README file and 2) it's easier to type in the README file than to put a raw
@@ -46,5 +51,13 @@ setup(
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
     include_package_data=True,
     zip_safe=True,
-    install_requires=read("requirements.txt").split("\n")
+    install_requires=read("requirements.txt").split("\n"),
+    extras_require=dict(
+        test=TESTS_REQUIRE,
+        build=[
+            'pip-tools',
+        ],
+    ),
+    python_requires='>=3.7',
+    tests_require=TESTS_REQUIRE,
 )
