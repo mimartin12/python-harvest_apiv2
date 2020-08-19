@@ -1,0 +1,8 @@
+[run]
+source =
+    ../python-harvest_apiv2
+    */site-packages/python-harvest_apiv2
+
+[report]
+show_missing = true
+precision = 2
