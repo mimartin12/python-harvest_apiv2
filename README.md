@@ -52,7 +52,7 @@ print("Browse to here in your web browser and authenticate: ", authorization_url
 response_uri = input("Please copy the resulting URL from your browser and paste here:")
 
 harv = OAuth2Session("CLIENT ID", state=state)
-token = harv.fetch_token("https://id.getharvest.com/api/v2/oauth2/token", client_secret="CLIENT SECRET", authorization_response=response_uri, state=state)
+token = harv.fetch_token("https://id.getharvest.com/api/v2/oauth2/token", client_secret="CLIENT SECRET", authorization_response=response_uri, include_client_id=True, state=state)
 oauth2_serverside_token = from_dict(data_class=OAuth2_ServerSide_Token, data=token)
 oauth2_serverside = OAuth2_ServerSide(client_id="CLIENT ID", client_secret="CLIENT SECRET", token=oauth2_serverside_token, refresh_url="https://id.getharvest.com/api/v2/oauth2/token")
 
