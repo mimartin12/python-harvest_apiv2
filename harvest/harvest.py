@@ -43,7 +43,7 @@ class Harvest(object):
         self.__uri = uri.rstrip('/')
         parsed = urlparse(uri)
 
-        self.__headers = {'User-Agent': 'Lionheart/python-harvest',
+        self.__headers = {'User-Agent': 'bradbase/python-harvest-apiv2',
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         }
@@ -814,6 +814,48 @@ class Harvest(object):
 
     def delete_user(self, user_id):
         self._delete('/users/{0}'.format(user_id))
+        
+    ## Reports
+
+    def reports_expenses_clients(self, from_date, to_date, page=1, per_page=1000):
+        url = '/reports/expenses/clients?from={0}&to={1}&page={2}&per_page={3}'.format(from_date, to_date, page, per_page)
+        return from_dict(data_class=ExpenseReportResults, data=self._get(url))
+
+    def reports_expenses_projects(self, from_date, to_date, page=1, per_page=1000):
+        url = '/reports/expenses/projects?from={0}&to={1}&page={2}&per_page={3}'.format(from_date, to_date, page, per_page)
+        return from_dict(data_class=ExpenseReportResults, data=self._get(url))
+
+    def reports_expenses_categories(self, from_date, to_date, page=1, per_page=1000):
+        url = '/reports/expenses/categories?from={0}&to={1}&page={2}&per_page={3}'.format(from_date, to_date, page, per_page)
+        return from_dict(data_class=ExpenseReportResults, data=self._get(url))
+
+    def reports_expenses_team(self, from_date, to_date, page=1, per_page=1000):
+        url = '/reports/expenses/team?from={0}&to={1}&page={2}&per_page={3}'.format(from_date, to_date, page, per_page)
+        return from_dict(data_class=ExpenseReportResults, data=self._get(url))
+
+    def reports_uninvoiced(self, from_date, to_date, page=1, per_page=1000):
+        url = '/reports/uninvoiced?from={0}&to={1}&page={2}&per_page={3}'.format(from_date, to_date, page, per_page)
+        return from_dict(data_class=UninvoicedReportResults, data=self._get(url))
+
+    def reports_time_clients(self, from_date, to_date, page=1, per_page=1000):
+        url = '/reports/time/clients?from={0}&to={1}&page={2}&per_page={3}'.format(from_date, to_date, page, per_page)
+        return from_dict(data_class=TimeReportResults, data=self._get(url))
+
+    def reports_time_projects(self, from_date, to_date, page=1, per_page=1000):
+        url = '/reports/time/projects?from={0}&to={1}&page={2}&per_page={3}'.format(from_date, to_date, page, per_page)
+        return from_dict(data_class=TimeReportResults, data=self._get(url))
+
+    def reports_time_tasks(self, from_date, to_date, page=1, per_page=1000):
+        url = '/reports/time/tasks?from={0}&to={1}&page={2}&per_page={3}'.format(from_date, to_date, page, per_page)
+        return from_dict(data_class=TimeReportResults, data=self._get(url))
+
+    def reports_time_team(self, from_date, to_date, page=1, per_page=1000):
+        url = '/reports/time/team?from={0}&to={1}&page={2}&per_page={3}'.format(from_date, to_date, page, per_page)
+        return from_dict(data_class=TimeReportResults, data=self._get(url))
+
+    def reports_project_budget(self, page=1, per_page=1000):
+        url = '/reports/project_budget?page={0}&per_page={1}'.format(page, per_page)
+        return from_dict(data_class=ProjectBudgetReportResults, data=self._get(url))
 
     def _get(self, path='/', data=None):
         return self._request('GET', path, data)

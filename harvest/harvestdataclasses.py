@@ -322,6 +322,7 @@ class FreeFormInvoice:
     due_date: str = None
     payment_term: str = None
     line_items: List[LineItem] = None
+
 @dataclass
 class InvoiceImport:
     notes: Optional[str]
@@ -650,6 +651,61 @@ class DetailedTimeEntry:
     currency: str
 
 @dataclass
+class ExpenseReportResult:
+    client_id: Optional[int]
+    client_name: Optional[str]
+    project_id: Optional[int]
+    project_name: Optional[str]
+    expense_category_id: Optional[int]
+    expense_category_name: Optional[str]
+    user_id: Optional[int]
+    user_name: Optional[str]
+    is_contractor: Optional[bool]
+    total_amount: float
+    billable_amount: float
+    currency: str
+
+@dataclass
+class UninvoicedReportResult:
+    client_id: int
+    client_name: str
+    project_id: int
+    project_name: str
+    currency: str
+    total_hours: float
+    uninvoiced_hours: float
+    uninvoiced_expenses: float
+    uninvoiced_amount: float
+
+@dataclass
+class TimeReportResult:
+    client_id: Optional[int]
+    client_name: Optional[str]
+    project_id: Optional[int]
+    project_name: Optional[str]
+    task_id: Optional[int]
+    task_name: Optional[str]
+    user_id: Optional[int]
+    user_name: Optional[str]
+    is_contractor: Optional[bool]
+    total_hours: float
+    billable_hours: float
+    currency: str
+    billable_amount: float
+
+@dataclass
+class ProjectBudgetReportResult:
+    client_id: int
+    client_name: str
+    project_id: int
+    project_name: str
+    budget_is_monthly: bool
+    is_active: bool
+    budget: float
+    budget_spent: float
+    budget_remaining: float
+
+@dataclass
 class Links:
     next: Optional[str]
     previous: Optional[str]
@@ -753,3 +809,19 @@ class Users(BasePage):
 @dataclass
 class DetailedTimeReport():
     detailed_time_entries: List[DetailedTimeEntry]
+
+@dataclass
+class ExpenseReportResults():
+    results: List[ExpenseReportResult]
+
+@dataclass
+class UninvoicedReportResults():
+    results: List[UninvoicedReportResult]
+
+@dataclass
+class TimeReportResults():
+    results: List[TimeReportResult]
+
+@dataclass
+class ProjectBudgetReportResults():
+    results: List[ProjectBudgetReportResult]
