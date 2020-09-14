@@ -30,7 +30,7 @@ class Reports(Harvest):
     def timeframe(self, timeframe, from_date = None, to_date = None):
 
         if timeframe == 'This Week':
-            return {'from' : None, 'to' : None}
+            return {'from_date' : None, 'to_date' : None}
 
         elif timeframe == 'Last Week':
             pass
