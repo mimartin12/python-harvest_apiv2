@@ -29,7 +29,7 @@ class Reports(Harvest):
         self.task_cache = {}
         self.user_cache = {}
 
-    def timeframe(self, timeframe, from_date = None, to_date = None):
+    def timeframe(self, timeframe, from_date=None, to_date=None):
         quarters = [None,
                     [1, 3], [1, 3], [1, 3],
                     [4, 6], [4, 6], [4, 6],
