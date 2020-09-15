@@ -15,6 +15,8 @@
 
 import itertools
 
+from datetime import datetime, timedelta, date
+from calendar import monthrange
 from harvest import Harvest
 from .harvestdataclasses import *
 
@@ -28,42 +30,106 @@ class Reports(Harvest):
         self.user_cache = {}
 
     def timeframe(self, timeframe, from_date = None, to_date = None):
+        quarters = [None,
+                    [1, 3], [1, 3], [1, 3],
+                    [4, 6], [4, 6], [4, 6],
+                    [7, 9], [7, 9], [7, 9],
+                    [10, 12], [10, 12], [10, 12]]
+        today = datetime.now().date()
 
         if timeframe == 'This Week':
-            return {'from_date' : None, 'to_date' : None}
+            start_date = today - timedelta(days=today.weekday())
+            end_date = start_date + timedelta(days=6)
 
         elif timeframe == 'Last Week':
-            pass
+            today = today - timedelta(days=7)
+            start_date = today - timedelta(days=today.weekday())
+            end_date = start_date + timedelta(days=6)
 
         elif timeframe == 'This Semimonth':
-            pass
+            if today.day <= 15:
+                start_date = today.replace(day=1)
+                end_date = today.replace(day=15)
+            else:
+                start_date = today.replace(day=16)
+                end_date = today.replace(
+                    day=monthrange(today.year, today.month)[1])
 
         elif timeframe == 'Last Semimonth':
-            pass
+            if today.day <= 15:
+                if today.month == 1:
+                    start_date = today.replace(
+                        year=today.year-1, month=12, day=16)
+                    end_date = today.replace(
+                        year=today.year-1,
+                        month=12,
+                        day=monthrange(today.year-1, 12)[1])
+                else:
+                    start_date = today.replace(month=today.month-1, day=16)
+                    end_date = today.replace(
+                        month=today.month-1,
+                        day=monthrange(today.year, today.month-1)[1])
+            else:
+                start_date = today.replace(day=1)
+                end_date = today.replace(day=15)
 
         elif timeframe == 'This Month':
-            pass
+            start_date = today.replace(day=1)
+            end_date = today.replace(
+                day=monthrange(today.year, today.month)[1])
 
         elif timeframe == 'Last Month':
-            pass
+            if today.month == 1:
+                start_date = today.replace(year=today.year-1, month=12, day=1)
+                end_date = today.replace(
+                    year=today.year-1,
+                    month=12,
+                    day=monthrange(today.year-1, 12)[1])
+            else:
+                start_date = today.replace(month=today.month-1, day=1)
+                end_date = today.replace(
+                    month=today.month-1,
+                    day=monthrange(today.year, today.month-1)[1])
 
         elif timeframe == 'This Quarter':
-            pass
+            quarter = quarters[today.month]
+            start_date = date(today.year, quarter[0], 1)
+            end_date = date(
+                today.year,
+                quarter[1],
+                monthrange(today.year, quarter[1])[1])
 
         elif timeframe == 'Last Quarter':
-            pass
+            if today.month <= 3:
+                quarter = [10, 12]
+                today = today.replace(year=today.year-1)
+            else:
+                quarter = quarters[today.month-3]
+            start_date = date(today.year, quarter[0], 1)
+            end_date = date(
+                today.year,
+                quarter[1],
+                monthrange(today.year, quarter[1])[1])
 
         elif timeframe == 'This Year':
-            pass
+            start_date = date(today.year, 1, 1)
+            end_date = date(today.year, 12, 31)
 
         elif timeframe == 'Last Year':
-            pass
+            start_date = date(today.year-1, 1, 1)
+            end_date = date(today.year-1, 12, 31)
 
         elif timeframe == 'All Time':
             return {}
 
         elif timeframe == 'Custom':
-            pass
+            return {}
+
+        else:
+            raise ValueError(
+                "unknown argument \'timeframe\': \'%s\'" % timeframe)
+
+        return {'from_date': start_date, 'to_date': end_date}
 
     def show(self, hours):
 
