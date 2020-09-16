@@ -104,4 +104,4 @@ Contributions are welcome. Including tests helps decide on whether to merge the 
 
 ### License
 
-python-harvest_apiv2 is licensed under Apache 2.0. See [LICENSE](LICENSE) for more details.
+python-harvest_apiv2 is licensed under MIT style licence. See [LICENSE](LICENSE) for more details.
