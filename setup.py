@@ -35,7 +35,7 @@ classifiers = [
     "Programming Language :: Python :: 3.7",
     "Topic :: Software Development :: Libraries",
     "Topic :: Utilities",
-    "License :: OSI Approved :: Apache Software License",
+    "License :: OSI Approved :: MIT License",
 ]
 
 setup(

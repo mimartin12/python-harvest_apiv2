@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 __author__ = "Bradley van Ree"
 __copyright__ = "Copyright 2020 Bradbase"
 __maintainer__ = "Bradley van Ree"
 __email__ = "brads@bradbase.net"
-__license__ = "Apache 2.0"
+__license__ = "MIT"

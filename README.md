@@ -89,59 +89,18 @@ client = harvest.Harvest("https://api.harvestapp.com/api/v2", oauth2_clientside_
 client.get_currently_authenticated_user()
 ```
 
-### How to use Personal Access Tokens
-
-You must create a Personal Access Token in Harvest first. https://id.getharvest.com/developers
-
-The PersonalAccessToken class is found in the dataclass module:
-
-```python
-from harvest.dataclasses import *
-
-personal_access_token = PersonalAccessToken(account_id="ACCOUNT ID", access_token="ACCESS TOKEN")
-```
-
-### How to use OAuth2 for Server Side Applications
-
-You must create an OAuth2 Application in Harvest first. https://id.getharvest.com/developers
-
-Then you need to authenticate against Harvest to get your token.
-
-Token must look like this:
-
-```python
-from harvest.dataclasses import *
-
-authorization_code_flow_token = OAuth2_ServerSide_Token(access_token="ACCESS TOKEN", refresh_token="REFRESH TOKEN", expires_in="EXPIRES IN", expires_at="EXPIRES AT")
-authorization_code_flow = OAuth2_ServerSide(client_id="CLIENT ID", client_secret="CLIENT SECRET", token=authorization_code_flow_token, refresh_url="REFRESH URL")
-```
-
-### How to use OAuth2 for Client Side Applications
-
-You must create an OAuth2 Application in Harvest first. https://id.getharvest.com/developers
-
-Then you need to authenticate against Harvest to get your token.
-
-Token must look like this:
-
-```python
-from harvest.dataclasses import *
-
-implicit_code_flow_token = OAuth2_ClientSide_Token(access_token="ACCESS TOKEN", expires_in="EXPIRES IN", token_type="Bearer", scope=["Harvest:ACCOUNTID", "Forecast:ACCOUNTID"])
-```
-
 ### Run tests
 From the root python-harvest_apiv2 directory
-```python
-python -m unittest discover -p "*_test.py"
+```
+tox
 ```
 
 ### Contributions
 
-Contributions are welcome. Please submit a pull request and make sure you adhere to PEP-8 coding guidelines. I'll review your patch and will accept if it looks good.
+Contributions are welcome. Including tests helps decide on whether to merge the PR.
 
 ### TODOs
-No current TODOs. :D
+[] Write API doco for the Python client. The tests demonstrate how to use the library but that's not clear from this page.
 
 ### License
 
