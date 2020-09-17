@@ -100,7 +100,8 @@ tox
 Contributions are welcome. Including tests helps decide on whether to merge the PR.
 
 ### TODOs
-[] Write API doco for the Python client. The tests demonstrate how to use the library but that's not clear from this page.
+* Write API doco for the Python client. The tests demonstrate how to use the library but that's not clear from this page.
+* Support Detailed Reports page functionality in the module detailedreports
 
 ### License
 
