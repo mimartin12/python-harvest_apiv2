@@ -1,17 +1,5 @@
 
 # Copyright 2020 Bradbase
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
 import itertools
 
@@ -20,10 +8,9 @@ from calendar import monthrange
 from harvest import Harvest
 from .harvestdataclasses import *
 
-class Reports(Harvest):
+class DetailedReports(Harvest):
 
     def __init__(self, *argsv, **kwargs):
-        super(Reports, self).__init__(*argsv, **kwargs)
         self.client_cache = {}
         self.project_cache = {}
         self.task_cache = {}
@@ -37,16 +24,18 @@ class Reports(Harvest):
                     [10, 12], [10, 12], [10, 12]]
         today = datetime.now().date()
 
-        if timeframe == 'This Week':
+        timeframe_upper = timeframe.upper()
+
+        if timeframe_upper == 'THIS WEEK':
             start_date = today - timedelta(days=today.weekday())
             end_date = start_date + timedelta(days=6)
 
-        elif timeframe == 'Last Week':
+        elif timeframe_upper == 'LAST WEEK':
             today = today - timedelta(days=7)
             start_date = today - timedelta(days=today.weekday())
             end_date = start_date + timedelta(days=6)
 
-        elif timeframe == 'This Semimonth':
+        elif timeframe_upper == 'THIS SEMIMONTH':
             if today.day <= 15:
                 start_date = today.replace(day=1)
                 end_date = today.replace(day=15)
@@ -55,7 +44,7 @@ class Reports(Harvest):
                 end_date = today.replace(
                     day=monthrange(today.year, today.month)[1])
 
-        elif timeframe == 'Last Semimonth':
+        elif timeframe_upper == 'LAST SEMIMONTH':
             if today.day <= 15:
                 if today.month == 1:
                     start_date = today.replace(
@@ -73,12 +62,12 @@ class Reports(Harvest):
                 start_date = today.replace(day=1)
                 end_date = today.replace(day=15)
 
-        elif timeframe == 'This Month':
+        elif timeframe_upper == 'THIS MONTH':
             start_date = today.replace(day=1)
             end_date = today.replace(
                 day=monthrange(today.year, today.month)[1])
 
-        elif timeframe == 'Last Month':
+        elif timeframe_upper == 'LAST MONTH':
             if today.month == 1:
                 start_date = today.replace(year=today.year-1, month=12, day=1)
                 end_date = today.replace(
@@ -91,7 +80,7 @@ class Reports(Harvest):
                     month=today.month-1,
                     day=monthrange(today.year, today.month-1)[1])
 
-        elif timeframe == 'This Quarter':
+        elif timeframe_upper == 'THIS QUARTER':
             quarter = quarters[today.month]
             start_date = date(today.year, quarter[0], 1)
             end_date = date(
@@ -99,7 +88,7 @@ class Reports(Harvest):
                 quarter[1],
                 monthrange(today.year, quarter[1])[1])
 
-        elif timeframe == 'Last Quarter':
+        elif timeframe_upper == 'LAST QUARTER':
             if today.month <= 3:
                 quarter = [10, 12]
                 today = today.replace(year=today.year-1)
@@ -111,49 +100,30 @@ class Reports(Harvest):
                 quarter[1],
                 monthrange(today.year, quarter[1])[1])
 
-        elif timeframe == 'This Year':
+        elif timeframe_upper == 'THIS YEAR':
             start_date = date(today.year, 1, 1)
             end_date = date(today.year, 12, 31)
 
-        elif timeframe == 'Last Year':
+        elif timeframe_upper == 'LAST YEAR':
             start_date = date(today.year-1, 1, 1)
             end_date = date(today.year-1, 12, 31)
 
-        elif timeframe == 'All Time':
+        elif timeframe_upper == 'ALL TIME':
             return {}
 
-        elif timeframe == 'Custom':
-            return {}
+        # Not currently supported
+        elif timeframe_upper == 'CUSTOM':
+            raise ValueError("Custom timeframe not currently supported.")
 
         else:
             raise ValueError(
-                "unknown argument \'timeframe\': \'%s\'" % timeframe)
+                "unknown argument \'timeframe\': \'%s\'" % timeframe_upper)
 
         return {'from_date': start_date, 'to_date': end_date}
 
-    def show(self, hours):
-
-        if hours == 'All Hours':
-            pass
-
-        elif hours == 'Billable Hours':
-            pass
-
-        elif hours == 'Non-Billable Hours':
-            pass
-
-        elif hours == 'Uninvoiced Billable Hours':
-            pass
-
-        elif hours == 'Uninvoiced Hours':
-            pass
-
-        elif hours == 'Invoiced Hours':
-            pass
-
 
     # team is user
-    def detailed_time(self, time_frame='All Time', clients=[None], projects=[None], tasks=[None], team=[None], include_archived_items=False, show='All Hours', group_by='Date', activeProject_only=False):
+    def detailed_time(self, time_frame='All Time', clients=[None], projects=[None], tasks=[None], team=[None], include_archived_items=False, group_by='Date', activeProject_only=False):
         arg_configs = []
         time_entry_results = DetailedTimeReport([])
 
