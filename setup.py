@@ -13,6 +13,7 @@ TESTS_REQUIRE = [
     'coverage',
     'pytest',
     'pytest-cov',
+    'mock'
 ]
 
 # Utility function to read the README file.
