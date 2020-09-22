@@ -354,9 +354,9 @@ class Harvest(object):
         if updated_since is not None:
             url = '{0}&updated_since={1}'.format(url, updated_since)
         if from_date is not None:
-            url = '{0}&from_date={1}'.format(url, from_date)
+            url = '{0}&from={1}'.format(url, from_date)
         if to_date is not None:
-            url = '{0}&to_date={1}'.format(url, to_date)
+            url = '{0}&to={1}'.format(url, to_date)
 
         return from_dict(data_class=Estimates, data=self._get(url))
 
@@ -440,7 +440,7 @@ class Harvest(object):
         if from_date is not None:
             url = '{0}&from={1}'.format(url, from_date)
         if to_date is not None:
-            url = '{0}&to_date={1}'.format(url, to_date)
+            url = '{0}&to={1}'.format(url, to_date)
 
         return from_dict(data_class=Expenses, data=self._get(url))
 
@@ -551,7 +551,7 @@ class Harvest(object):
         if from_date is not None:
             url = '{0}&from={1}'.format(url, from_date)
         if to_date is not None:
-            url = '{0}&to_date={1}'.format(url, to_date)
+            url = '{0}&to={1}'.format(url, to_date)
 
         return from_dict(data_class=TimeEntries, data=self._get(url))
 
