@@ -633,7 +633,3 @@ class TestReports(unittest.TestCase):
         requested_report_project_budget = self.harvest.reports_project_budget()
 
         self.assertEqual(requested_report_project_budget, report_project_budget)
-
-
-if __name__ == '__main__':
-    unittest.main()

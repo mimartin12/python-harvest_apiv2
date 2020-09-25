@@ -803,7 +803,3 @@ class TestProjects(unittest.TestCase):
         self.assertEqual(requested_deleted_project, None)
 
         httpretty.reset()
-
-
-if __name__ == '__main__':
-    unittest.main()

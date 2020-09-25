@@ -286,7 +286,3 @@ class TestClients(unittest.TestCase):
 
 
         httpretty.reset()
-
-
-if __name__ == '__main__':
-    unittest.main()

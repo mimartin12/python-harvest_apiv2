@@ -24,8 +24,12 @@ class HarvestError(Exception):
 
 class Harvest(object):
 
-    # 15 is from the Harvest API doco https://help.getharvest.com/api-v2/introduction/overview/general/
-    RATE_LIMIT_DURATION_SECONDS = 15
+    # 15 seconds is from the Harvest API doco https://help.getharvest.com/api-v2/introduction/overview/general/
+    RATE_LIMIT_REQUESTS_DURATION_SECONDS = 15
+    # 15 mins is from the Harvest API doco https://help.getharvest.com/api-v2/introduction/overview/general/
+    RATE_LIMIT_REPORTS_DURATION_SECONDS = 900
+
+    RATE_LIMIT_REQUEST_COUNT = 100
 
     def __init__(self, uri, auth):
         self.__uri = uri.rstrip('/')
@@ -54,7 +58,9 @@ class Harvest(object):
 
         self.__auth = auth
         self.request_throttle = deque()
-        self.time_limit = timedelta(seconds=self.RATE_LIMIT_DURATION_SECONDS)
+        self.reports_throttle = deque()
+        self.request_time_limit = timedelta(seconds=self.RATE_LIMIT_REQUESTS_DURATION_SECONDS)
+        self.reports_time_limit = timedelta(seconds=self.RATE_LIMIT_REPORTS_DURATION_SECONDS)
 
     @property
     def uri(self):
@@ -866,6 +872,7 @@ class Harvest(object):
             'headers': copy.deepcopy(self.__headers)
         }
 
+        # patch to get the file object working
         if files is not None:
             del(kwargs['headers']['Content-Type'])
             kwargs['files'] = files
@@ -875,18 +882,30 @@ class Harvest(object):
 
         requestor = requests
 
+
         # request throttling
-        now = datetime.now()
-        self.request_throttle.append(now)
-        oldest_time = self.request_throttle.popleft()
-        aged_delta = now - oldest_time
+        if '/reports/' in url:
+            # Reports requests have a limit of 100 request in 15 mins
+            now = datetime.now()
+            self.reports_throttle.append(now)
+            oldest_time = self.reports_throttle.popleft()
+            aged_delta = now - oldest_time
+            if aged_delta <= self.reports_time_limit:
+                self.reports_throttle.appendleft(oldest_time)
 
-        if aged_delta <= self.time_limit:
-            self.request_throttle.appendleft(oldest_time)
+                if (len(self.reports_throttle) > self.RATE_LIMIT_REQUEST_COUNT):
+                    time.sleep(self.RATE_LIMIT_REPORTS_DURATION_SECONDS * (aged_delta / self.reports_time_limit))
+        else:
+            # General requests have a limit of 100 request in 15 seconds
+            now = datetime.now()
+            self.request_throttle.append(now)
+            oldest_time = self.request_throttle.popleft()
+            aged_delta = now - oldest_time
+            if aged_delta <= self.request_time_limit:
+                self.request_throttle.appendleft(oldest_time)
 
-            # 15 is from the Harvest API doco https://help.getharvest.com/api-v2/introduction/overview/general/
-            if (len(self.request_throttle) > 100):
-                time.sleep(self.RATE_LIMIT_DURATION_SECONDS * (aged_delta / self.time_limit))
+                if (len(self.request_throttle) > self.RATE_LIMIT_REQUEST_COUNT):
+                    time.sleep(self.RATE_LIMIT_REQUESTS_DURATION_SECONDS * (aged_delta / self.request_time_limit))
 
         # "auto" refresh_token. Currently only works on Authorization Code flow
         if isinstance(self.__auth, OAuth2_ServerSide) and (datetime.utcfromtimestamp(self.__auth.token.expires_at) <= datetime.now()):
@@ -896,11 +915,33 @@ class Harvest(object):
 
         try:
             resp = requestor.request(**kwargs)
-            if 'DELETE' not in method:
-                try:
-                    return resp.json()
-                except:
-                    return resp
-            return resp
+
+            if resp.status_code == 500:
+                raise HarvestError('There was a server error for your request. Contact support@getharvest.com for help. url: {0}'.format(resp.url))
+
+            elif resp.status_code == 429:
+                raise HarvestError('Your request has been throttled. Raise an issue on the project in GitHub. https://github.com/bradbase/python-harvest_apiv2')
+
+            elif resp.status_code == 422:
+                raise HarvestError('There were errors processing your request. {0} {1}'.format(resp.url, resp.text))
+
+            elif resp.status_code == 404:
+                raise HarvestError('The object you requested can’t be found. {0}'.format(resp.url))
+
+            elif resp.status_code == 403:
+                raise HarvestError('The object you requested was found but you don’t have authorization to perform your request. {0}'.format(resp.url))
+
+            elif resp.status_code in [200, 201]:
+
+                if 'DELETE' not in method:
+                    try:
+                        return resp.json()
+                    except:
+                        return resp
+                return resp
+
+            else:
+                raise HarvestError('Unsupported HTTP response code. {0} {1}'.format(resp.status_code, resp.url))
+
         except Exception as e:
             raise HarvestError(e)

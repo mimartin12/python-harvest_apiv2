@@ -867,7 +867,3 @@ class TestInvoices(unittest.TestCase):
         self.assertEqual(requested_deleted_invoice_item_category, None)
 
         httpretty.reset()
-
-
-if __name__ == '__main__':
-    unittest.main()

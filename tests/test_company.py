@@ -94,7 +94,3 @@ class TestCompany(unittest.TestCase):
         self.assertEqual(requested_company, company)
 
         httpretty.reset()
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -786,5 +786,4 @@ class TestUsers(unittest.TestCase):
         requested_deleted_user = self.harvest.delete_user(user_id= 2)
         self.assertEqual(requested_deleted_user, None)
 
-if __name__ == '__main__':
-    unittest.main()
+        httpretty.reset()

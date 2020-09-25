@@ -200,9 +200,3 @@ class TestTasks(unittest.TestCase):
         self.assertEqual(requested_deleted_task, None)
 
         httpretty.reset()
-
-
-
-
-if __name__ == '__main__':
-    unittest.main()

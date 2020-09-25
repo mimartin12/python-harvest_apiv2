@@ -168,7 +168,3 @@ class TestRoles(unittest.TestCase):
         self.assertEqual(requested_deleted_role, None)
 
         httpretty.reset()
-
-
-if __name__ == '__main__':
-    unittest.main()
