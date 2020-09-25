@@ -11,11 +11,11 @@ from .harvestdataclasses import *
 class DetailedReports(Harvest):
 
     def __init__(self, uri, auth):
+        super().__init__(uri, auth)
         self.client_cache = {}
         self.project_cache = {}
         self.task_cache = {}
         self.user_cache = {}
-        super().__init__(uri, auth)
 
     def timeframe(self, timeframe, from_date=None, to_date=None):
         quarters = [None,

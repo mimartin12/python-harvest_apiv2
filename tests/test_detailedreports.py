@@ -24,7 +24,7 @@ class TestDetailedReports(unittest.TestCase):
 
     def setUp(self):
         personal_access_token = PersonalAccessToken('ACCOUNT_NUMBER', 'PERSONAL_ACCESS_TOKEN')
-        self.detailed_reports = DetailedReports(Harvest('https://api.harvestapp.com/api/v2', personal_access_token))
+        self.detailed_reports = DetailedReports('https://api.harvestapp.com/api/v2', personal_access_token)
         warnings.filterwarnings("ignore", category=ResourceWarning, message="unclosed.*") # There's a bug in httpretty ATM.
         httpretty.enable()
 
