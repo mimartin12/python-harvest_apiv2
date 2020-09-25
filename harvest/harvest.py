@@ -904,12 +904,3 @@ class Harvest(object):
             return resp
         except Exception as e:
             raise HarvestError(e)
-
-def remove_nones(obj):
-  if isinstance(obj, (list, tuple, set)):
-    return type(obj)(remove_nones(x) for x in obj if x is not None)
-  elif isinstance(obj, dict):
-    return type(obj)((remove_nones(k), remove_nones(v))
-      for k, v in obj.items() if k is not None and v is not None)
-  else:
-    return obj

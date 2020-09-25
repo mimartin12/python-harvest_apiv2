@@ -10,7 +10,8 @@ from .harvestdataclasses import *
 
 class DetailedReports(Harvest):
 
-    def __init__(self, *argsv, **kwargs):
+    def __init__(self, uri, auth):
+        super().__init__(uri, auth)
         self.client_cache = {}
         self.project_cache = {}
         self.task_cache = {}
