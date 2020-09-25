@@ -913,35 +913,31 @@ class Harvest(object):
             oauth_token = new_session.refresh_token(self.__auth.refresh_url, client_id=self.__auth.client_id, client_secret=self.__auth.client_secret)
             self.__auth = from_dict(data_class=OAuth2_ServerSide_Token, data=oauth_token)
 
-        try:
-            resp = requestor.request(**kwargs)
+        resp = requestor.request(**kwargs)
 
-            if resp.status_code == 500:
-                raise HarvestError('There was a server error for your request. Contact support@getharvest.com for help. url: {0}'.format(resp.url))
+        if resp.status_code == 500:
+            raise HarvestError('There was a server error for your request. Contact support@getharvest.com for help. url: {0}'.format(resp.url))
 
-            elif resp.status_code == 429:
-                raise HarvestError('Your request has been throttled. Raise an issue on the project in GitHub. https://github.com/bradbase/python-harvest_apiv2')
+        elif resp.status_code == 429:
+            raise HarvestError('Your request has been throttled. Raise an issue on the project in GitHub. https://github.com/bradbase/python-harvest_apiv2')
 
-            elif resp.status_code == 422:
-                raise HarvestError('There were errors processing your request. {0} {1}'.format(resp.url, resp.text))
+        elif resp.status_code == 422:
+            raise HarvestError('There were errors processing your request. {0} {1}'.format(resp.url, resp.text))
 
-            elif resp.status_code == 404:
-                raise HarvestError('The object you requested can’t be found. {0}'.format(resp.url))
+        elif resp.status_code == 404:
+            raise HarvestError('The object you requested can’t be found. {0}'.format(resp.url))
 
-            elif resp.status_code == 403:
-                raise HarvestError('The object you requested was found but you don’t have authorization to perform your request. {0}'.format(resp.url))
+        elif resp.status_code == 403:
+            raise HarvestError('The object you requested was found but you don’t have authorization to perform your request. {0}'.format(resp.url))
 
-            elif resp.status_code in [200, 201]:
+        elif resp.status_code in [200, 201]:
 
-                if 'DELETE' not in method:
-                    try:
-                        return resp.json()
-                    except:
-                        return resp
-                return resp
+            if 'DELETE' not in method:
+                try:
+                    return resp.json()
+                except:
+                    return resp
+            return resp
 
-            else:
-                raise HarvestError('Unsupported HTTP response code. {0} {1}'.format(resp.status_code, resp.url))
-
-        except Exception as e:
-            raise HarvestError(e)
+        else:
+            raise HarvestError('Unsupported HTTP response code. {0} {1}'.format(resp.status_code, resp.url))
