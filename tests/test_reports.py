@@ -384,6 +384,53 @@ class TestReports(unittest.TestCase):
 
         self.assertEqual(requested_report_time_clients, report_time_clients)
 
+    def test_report_time_clients_no_currency_no_billable_amount(self):
+
+        client_5735776 = {
+          "client_id": 5735776,
+          "client_name": "123 Industries",
+          "total_hours": 4.5,
+          "billable_hours": 3.5,
+          "currency": None,
+          "billable_amount": 350
+        }
+
+        client_5735774 = {
+          "client_id": 5735774,
+          "client_name": "ABC Corp",
+          "total_hours": 2,
+          "billable_hours": 2,
+          "currency": None,
+          "billable_amount": None
+        }
+
+        time_clients_results_dict = {
+                "results":[client_5735776, client_5735774],
+                "per_page":1000,
+                "total_pages":1,
+                "total_entries":2,
+                "next_page":None,
+                "previous_page":None,
+                "page":1,
+                "links":{
+                        "first":"https://api.harvestapp.com/api/v2/reports/time/clients?from=20170101&page=1&per_page=1000&to=20171231",
+                        "next":None,
+                        "previous":None,
+                        "last":"https://api.harvestapp.com/api/v2/reports/time/clients?from=20170101&page=1&per_page=1000&to=20171231"
+                    }
+            }
+
+        # reports_time_clients
+        httpretty.register_uri(httpretty.GET,
+                "https://api.harvestapp.com/api/v2/reports/time/clients?from=20170101&to=20171231",
+                body=json.dumps(time_clients_results_dict),
+                status=200
+            )
+        report_time_clients = from_dict(data_class=TimeReportResults, data=time_clients_results_dict)
+        requested_report_time_clients = self.harvest.reports_time_clients(from_date=20170101, to_date=20171231)
+
+        self.assertEqual(requested_report_time_clients, report_time_clients)
+
     def test_report_time_projects(self):
 
         project_14307913 = {
@@ -592,6 +639,61 @@ class TestReports(unittest.TestCase):
           "budget": 200,
           "budget_spent": 4,
           "budget_remaining": 196
+        }
+
+        project_14307913 = {
+          "project_id": 14307913,
+          "project_name": "Marketing Website",
+          "client_id": 5735774,
+          "client_name": "ABC Corp",
+          "budget_is_monthly": False,
+          "budget_by": "project",
+          "is_active": True,
+          "budget": 50,
+          "budget_spent": 2,
+          "budget_remaining": 48
+        }
+
+        project_budget_results_dict = {
+                "results":[project_14308069, project_14307913],
+                "per_page":1000,
+                "total_pages":1,
+                "total_entries":2,
+                "next_page":None,
+                "previous_page":None,
+                "page":1,
+                "links":{
+                        "first":"https://api.harvestapp.com/api/v2/reports/project_budget?from=20170101&page=1&per_page=1000&to=20171231",
+                        "next":None,
+                        "previous":None,
+                        "last":"https://api.harvestapp.com/api/v2/reports/project_budget?from=20170101&page=1&per_page=1000&to=20171231"
+                    }
+            }
+
+        # reports_project_budget
+        httpretty.register_uri(httpretty.GET,
+                "https://api.harvestapp.com/api/v2/reports/project_budget?from=20170101&to=20171231",
+                body=json.dumps(project_budget_results_dict),
+                status=200
+            )
+        report_project_budget = from_dict(data_class=ProjectBudgetReportResults, data=project_budget_results_dict)
+        requested_report_project_budget = self.harvest.reports_project_budget()
+
+        self.assertEqual(requested_report_project_budget, report_project_budget)
+
+    def test_report_project_budget_no_budget_no_spent_no_remaining(self):
+
+        project_14308069 = {
+          "project_id": 14308069,
+          "project_name": "Online Store - Phase 1",
+          "client_id": 5735776,
+          "client_name": "123 Industries",
+          "budget_is_monthly": False,
+          "budget_by": "project",
+          "is_active": True,
+          "budget": None,
+          "budget_spent": None,
+          "budget_remaining": None
         }
 
         project_14307913 = {

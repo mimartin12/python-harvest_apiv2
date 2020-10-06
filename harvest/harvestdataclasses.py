@@ -676,22 +676,22 @@ class TimeReportResult:
     user_id: Optional[int]
     user_name: Optional[str]
     is_contractor: Optional[bool]
+    currency: Optional[str]
+    billable_amount: Optional[float]
     total_hours: float
     billable_hours: float
-    currency: str
-    billable_amount: float
 
 @dataclass
 class ProjectBudgetReportResult:
+    budget: Optional[float]
+    budget_spent: Optional[float]
+    budget_remaining: Optional[float]
     client_id: int
     client_name: str
     project_id: int
     project_name: str
     budget_is_monthly: bool
     is_active: bool
-    budget: float
-    budget_spent: float
-    budget_remaining: float
 
 @dataclass
 class Links:
