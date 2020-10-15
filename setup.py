@@ -48,7 +48,7 @@ setup(
     keywords='harvestapp timetracking api',
     author=metadata['__author__'],
     author_email=metadata['__email__'],
-    url='https://github.com/bradbase/python-harvest-apiv2',
+    url='https://github.com/bradbase/python-harvest_apiv2',
     license=metadata['__license__'],
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
     include_package_data=True,
