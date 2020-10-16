@@ -42,7 +42,7 @@ from oauthlib.oauth2 import WebApplicationClient
 from dacite import from_dict
 
 import harvest
-from harvest.dataclasses import *
+from harvest.harvestdataclasses import *
 
 webclient = WebApplicationClient(client_id="CLIENT ID")
 oauth = OAuth2Session(client=webclient)
@@ -72,7 +72,7 @@ from oauthlib.oauth2 import MobileApplicationClient
 from dacite import from_dict
 
 import harvest
-from harvest.dataclasses import *
+from harvest.harvestdataclasses import *
 
 mobileclient = MobileApplicationClient(client_id="CLIENT ID")
 
