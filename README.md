@@ -22,7 +22,7 @@ Create a Personal Access Token in the Developers page on Harvest as documented i
 
 ```python
 import harvest
-from harvest.dataclasses import *
+from harvest.harvestdataclasses import *
 
 personal_access_token = PersonalAccessToken("ACCOUNT ID", "PERSONAL TOKEN")
 client = harvest.Harvest("https://api.harvestapp.com/api/v2", personal_access_token)
