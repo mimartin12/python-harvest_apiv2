@@ -6,12 +6,28 @@
 ![License](https://img.shields.io/pypi/l/python-harvest_apiv2.svg?style=flat)
 ![Versions](https://img.shields.io/pypi/pyversions/python-harvest_apiv2.svg?style=flat)
 
+This package has changed name.
+
+Previously
+```
+python-harvest-apiv2
+```
+
+Now found under
+```
+python-harvest_apiv2
+```
+
+
+Package called python-harvest-apiv2 will no longer be maintained. Please use python-harvest_apiv2
+
+
 ### Installation
 
 Python 3.7 and above:
 
 ```
-pip install "python-harvest-apiv2"
+pip install "python-harvest_apiv2"
 ```
 
 ### Usage
