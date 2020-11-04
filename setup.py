@@ -47,7 +47,7 @@ classifiers = [
 ]
 
 setup(
-    name='python-harvest-apiv2',
+    name='python-harvest_apiv2',
     version=metadata['__version__'],
     description="Harvest API v2 client",
     long_description="Harvest Time Tracking API v2 Client",
