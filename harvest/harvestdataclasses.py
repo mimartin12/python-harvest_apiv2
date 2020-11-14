@@ -168,7 +168,7 @@ class UserAssignment:
     hourly_rate: float = None
 
 @dataclass
-class Project:
+class ProjectRef:
     code: Optional[str]
     id: int = None
     name: str = None
@@ -179,7 +179,7 @@ class Expense:
     user: Optional[User]
     receipt: Optional[Receipt]
     invoice: Optional[InvoiceRef]
-    project: Optional[Project]
+    project: Optional[ProjectRef]
     notes: Optional[str]
     id: int = None
     total_cost: float = None
@@ -197,7 +197,7 @@ class Expense:
 
 @dataclass
 class LineItem:
-    project: Optional[Project]
+    project: Optional[ProjectRef]
     id: int = None
     kind: str = None
     description: str = None
@@ -224,7 +224,7 @@ class TimeImport:
 class LineItemImport:
     time: Optional[TimeImport]
     expenses: Optional[ExpenseImport]
-    project_ids: List[Project]
+    project_ids: List[int]
 
 @dataclass
 class Creator:
@@ -461,7 +461,7 @@ class TaskAssignment:
     is_active: bool = None
     created_at: str = None
     updated_at: str = None
-    project: Project = None
+    project: ProjectRef = None
     task: TaskAssignmentRef = None
 
 @dataclass
@@ -473,7 +473,7 @@ class UserAssignment:
     is_active: bool = None
     created_at: str = None
     updated_at: str = None
-    project: Project = None
+    project: ProjectRef = None
     user: User = None
 
 @dataclass
@@ -509,7 +509,7 @@ class TimeEntry:
     spent_date: str = None
     user: User = None
     client: Client = None
-    project: Project = None
+    project: ProjectRef = None
     task: Task = None
     user_assignment: UserAssignment = None
     task_assignment: ProjectTaskAssignments = None

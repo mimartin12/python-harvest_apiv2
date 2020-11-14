@@ -234,10 +234,11 @@ class Harvest(object):
 
     # invoice is a dataclass invoice
     def create_free_form_invoice(self, client_id, free_form_invoice):
-        return self.create_invoice(client_id, free_form_invoice)
+        free_form_invoice['client_id'] = client_id
+        return self.create_invoice(**free_form_invoice)
 
-    def create_invoice_based_on_tracked_time_and_expenses(self, client_id, invoice_import):
-        return self.create_free_form_invoice(client_id, invoice_import)
+    def create_invoice_based_on_tracked_time_and_expenses(self, client_id, invoice_import=InvoiceImport):
+        return self.create_free_form_invoice(client_id, asdict(invoice_import))
 
     # line_items is a list of LineItem
     def update_invoice(self, invoice_id, **kwargs):
