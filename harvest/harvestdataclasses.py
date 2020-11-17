@@ -209,16 +209,16 @@ class LineItem:
 
 @dataclass
 class ExpenseImport:
+    to: Optional[str]
+    attach_receipts: Optional[bool]
     summary_type: str
     #from: str = None
-    to: str = None
-    attach_receipt: str = None
 
 @dataclass
 class TimeImport:
+    to: Optional[str]
     summary_type: str
     #from: str = None
-    to: str = None
 
 @dataclass
 class LineItemImport:
@@ -315,19 +315,19 @@ class FreeFormInvoice:
 class InvoiceImport:
     notes: Optional[str]
     line_items_import: Optional[LineItemImport]
+    subject: Optional[str]
+    retainer_id: Optional[int]
+    estimate_id: Optional[int]
+    number: Optional[str]
+    purchase_order: Optional[str]
+    tax: Optional[float]
+    tax2: Optional[float]
+    discount: Optional[float]
+    currency: Optional[str]
+    issue_date: Optional[str]
+    due_date: Optional[str]
+    payment_term: Optional[str]
     client_id: int
-    retainer_id: int = None
-    estimate_id: int = None
-    number: str = None
-    purchase_order: str = None
-    tax: float = None
-    tax2: float = None
-    discount: float = None
-    subject: str = None
-    currency: str = None
-    issue_date: str = None
-    due_date: str = None
-    payment_term: str = None
 
 @dataclass
 class ClientContact:
