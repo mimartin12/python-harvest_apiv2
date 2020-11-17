@@ -1,6 +1,5 @@
 language: python
-sudo: false
-matrix:
+jobs:
     include:
         - python: 3.7
           env: TOXENV=py37
