@@ -239,7 +239,8 @@ class Harvest(object):
         return self.create_invoice(client_id, **invoice_dict)
 
     def create_invoice_based_on_tracked_time_and_expenses(self, invoice : InvoiceImport):
-        invoice_dict = asdict(invoice)
+        # translates from_date to from
+        invoice_dict = json.loads(invoice.to_json())
         client_id = invoice_dict['client_id']
         invoice_dict.pop('client_id', None)
         return self.create_invoice(client_id, **invoice_dict)

@@ -3,6 +3,7 @@
 
 from dataclasses import dataclass, field
 from typing import Optional, List
+from dataclasses_json import config, dataclass_json
 
 @dataclass
 class Auth:
@@ -207,18 +208,22 @@ class LineItem:
     taxed: bool = None
     taxed2: bool = None
 
+#https://stackoverflow.com/questions/60074344/reserved-word-as-an-attribute-name-in-a-dataclass-when-parsing-a-json-object
+@dataclass_json
 @dataclass
 class ExpenseImport:
     to: Optional[str]
     attach_receipts: Optional[bool]
+    from_date: Optional[str] = field(metadata=config(field_name="from"))
     summary_type: str
-    #from: str = None
 
+#https://stackoverflow.com/questions/60074344/reserved-word-as-an-attribute-name-in-a-dataclass-when-parsing-a-json-object
+@dataclass_json
 @dataclass
 class TimeImport:
     to: Optional[str]
+    from_date: Optional[str] = field(metadata=config(field_name="from"))
     summary_type: str
-    #from: str = None
 
 @dataclass
 class LineItemImport:
@@ -311,6 +316,7 @@ class FreeFormInvoice:
     line_items: Optional[List[LineItem]]
     client_id: int
 
+@dataclass_json
 @dataclass
 class InvoiceImport:
     notes: Optional[str]
