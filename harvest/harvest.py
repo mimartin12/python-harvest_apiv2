@@ -19,6 +19,19 @@ try:
 except ImportError:
     from urlparse import urlparse
 
+# TODO: ISSUE 15
+def assemble_query_string(**kwargs):
+    query_string = list()
+    for k,v in kwargs.items():
+        if v is None:
+            continue
+        elif type(v) is bool:
+            v = str(v).lower()
+        query_string.append(f'{k}={v}')
+    output_query_string = '&'.join(query_string)
+    return output_query_string
+
+
 class HarvestError(Exception):
     pass
 
@@ -102,14 +115,23 @@ class Harvest(object):
         self._delete('/contacts/{0}'.format(contact_id))
 
     ## Clients
-
-    def clients(self, page=1, per_page=100, is_active=None, updated_since=None):
-        url = '/clients?page={0}'.format(page)
-        url = '{0}&per_page={1}'.format(url, per_page)
-        if is_active is not None:
-            url = '{0}&is_active={1}'.format(url, is_active)
-        if updated_since is not None:
-            url = '{0}&updated_since={1}'.format(url, updated_since)
+    # TODO: ISSUE 15
+    def clients(self, **kwargs):
+        """
+        :param page: Page number to return, defaults to `1`
+        :type page: int
+        :param per_page: Number of clients to return per page, defaults to `100`
+        :type per_page: int
+        :param is_active: Include archived clients in return, defaults to `None`
+        :type is_active: bool or None
+        :param page: Include clients updated since, defaults to `None`
+        :type page: int or None
+        :return: Return a list of client objects.
+        :rtype: list
+        """
+        baseurl = '/clients?'
+        query_string = assemble_query_string(**kwargs)
+        url = f"{baseurl}{query_string}"
 
         return from_dict(data_class=Clients, data=self._get(url))
 
@@ -470,6 +492,7 @@ class Harvest(object):
     def delete_expense(self, expense_id):
         self._delete('/expenses/{0}'.format(expense_id))
 
+    # TODO: ISSUE 15
     def expense_categories(self, page=1, per_page=100, is_active=None, updated_since=None):
         url = '/expense_categories?page={0}'.format(page)
         url = '{0}&per_page={1}'.format(url, per_page)
@@ -497,7 +520,7 @@ class Harvest(object):
         self._delete('/expense_categories/{0}'.format(expense_category_id))
 
     ## Tasks
-
+    # TODO: ISSUE 15
     def tasks(self, page=1, per_page=100, is_active=None, updated_since=None):
         url = '/tasks?page={0}'.format(page)
         url = '{0}&per_page={1}'.format(url, per_page)
@@ -590,7 +613,7 @@ class Harvest(object):
         return from_dict(data_class=TimeEntry, data=self._patch('/time_entries/{0}/stop'.format(time_entry_id)))
 
     ## Projects
-
+    # TODO: ISSUE 15
     def user_assignments(self, page=1, per_page=100, is_active=None, updated_since=None):
         url = '/user_assignments?page={0}'.format(page)
         url = '{0}&per_page={1}'.format(url, per_page)
@@ -602,6 +625,7 @@ class Harvest(object):
 
         return from_dict(data_class=UserAssignments, data=self._get(url))
 
+    # TODO: ISSUE 15
     def project_user_assignments(self, project_id, page=1, per_page=100, is_active=None, updated_since=None):
         url = '/projects/{0}/user_assignments'.format(project_id)
         url = '{0}?page={1}'.format(url, page)
@@ -629,6 +653,7 @@ class Harvest(object):
     def delete_user_assignment(self, project_id, user_assignment_id):
         self._delete('/projects/{0}/user_assignments/{1}'.format(project_id, user_assignment_id))
 
+    # TODO: ISSUE 15
     def task_assignments(self, page=1, per_page=100, is_active=None, updated_since=None):
         url = '/task_assignments?page={0}'.format(page)
         url = '{0}&per_page={1}'.format(url, per_page)
@@ -640,6 +665,7 @@ class Harvest(object):
 
         return from_dict(data_class=TaskAssignments, data=self._get(url))
 
+    # TODO: ISSUE 15
     def project_task_assignments(self, project_id, page=1, per_page=100, is_active=None, updated_since=None):
         url = '/projects/{0}/task_assignments'.format(project_id)
         url = '{0}?page={1}'.format(url, page)
@@ -673,6 +699,7 @@ class Harvest(object):
     def delete_task_assignment(self, project_id, task_assignment_id):
         self._delete('/projects/{0}/task_assignments/{1}'.format(project_id, task_assignment_id))
 
+    # TODO: ISSUE 15
     def projects(self, page=1, per_page=100, client_id=None, is_active=None, updated_since=None):
         url = '/projects?page={0}'.format(page)
         url = '{0}&per_page={1}'.format(url, per_page)
@@ -775,6 +802,7 @@ class Harvest(object):
 
         return from_dict(data_class=ProjectAssignments, data=self._get(url))
 
+    # TODO: ISSUE 15
     def users(self, page=1, per_page=100, is_active=None, updated_since=None):
         url = '/users?page={0}'.format(page)
         url = '{0}&per_page={1}'.format(url, per_page)
