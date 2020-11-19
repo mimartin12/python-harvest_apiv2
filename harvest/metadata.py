@@ -1,7 +1,7 @@
 
 # Copyright 2020 Bradbase
 
-__version__ = "1.11.0"
+__version__ = "1.12.0"
 __author__ = "Bradley van Ree"
 __copyright__ = "Copyright 2020 Bradbase"
 __maintainer__ = "Bradley van Ree"
