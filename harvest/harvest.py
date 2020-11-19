@@ -19,9 +19,15 @@ try:
 except ImportError:
     from urlparse import urlparse
 
-# TODO: ISSUE 15
 def assemble_query_string(**kwargs):
     query_string = list()
+    
+    if not 'page' in kwargs:
+        kwargs['page'] = 1
+
+    if not 'per_page' in kwargs:
+        kwargs['per_page'] = 100
+
     for k,v in kwargs.items():
         if v is None:
             continue
@@ -115,7 +121,6 @@ class Harvest(object):
         self._delete('/contacts/{0}'.format(contact_id))
 
     ## Clients
-    # TODO: ISSUE 15
     def clients(self, **kwargs):
         """
         :param page: Page number to return, defaults to `1`
@@ -124,8 +129,8 @@ class Harvest(object):
         :type per_page: int
         :param is_active: Include archived clients in return, defaults to `None`
         :type is_active: bool or None
-        :param page: Include clients updated since, defaults to `None`
-        :type page: int or None
+        :param updated_since: Include clients updated since, defaults to `None`
+        :type updated_since: datetime or None
         :return: Return a list of client objects.
         :rtype: list
         """
@@ -157,8 +162,23 @@ class Harvest(object):
 
     ## Company
 
-    def company(self, page=1, per_page=100, is_active=None, updated_since_datetime=None):
-        url = '/company'
+    def company(self, **kwargs):
+        """
+        :param page: Page number to return, defaults to `1`
+        :type page: int
+        :param per_page: Number of clients to return per page, defaults to `100`
+        :type per_page: int
+        :param is_active: Include archived clients in return, defaults to `None`
+        :type is_active: bool or None
+        :param updated_since: Include clients updated since, defaults to `None`
+        :type updated_since: datetime or None
+        :return: Return a list of client objects.
+        :rtype: list
+        """
+        baseurl = '/company?'
+        query_string = assemble_query_string(**kwargs)
+        url = f"{baseurl}{query_string}"
+
         return from_dict(data_class=Company, data=self._get(url))
 
     ## Invoices
@@ -439,24 +459,32 @@ class Harvest(object):
 
     ## Expenses
 
-    def expenses(self, page=1, per_page=100, user_id=None, client_id=None, project_id=None, is_billed=None, updated_since=None, from_date=None, to_date=None):
-        url = '/expenses?page={0}'.format(page)
-        url = '{0}&per_page={1}'.format(url, per_page)
-
-        if user_id is not None:
-            url = '{0}&user_id={1}'.format(url, user_id)
-        if client_id is not None:
-            url = '{0}&client_id={1}'.format(url, client_id)
-        if project_id is not None:
-            url = '{0}&project_id={1}'.format(url, project_id)
-        if is_billed is not None:
-            url = '{0}&is_billed={1}'.format(url, is_billed)
-        if updated_since is not None:
-            url = '{0}&updated_since={1}'.format(url, updated_since)
-        if from_date is not None:
-            url = '{0}&from={1}'.format(url, from_date)
-        if to_date is not None:
-            url = '{0}&to={1}'.format(url, to_date)
+    def expenses(self, **kwargs):
+        """
+        :param page: Page number to return, defaults to `1`
+        :type page: int
+        :param per_page: Number of clients to return per page, defaults to `100`
+        :type per_page: int
+        :param user_id: Only return expenses belonging to the user with the given ID, defaults to None
+        :type user_id: int
+        :param client_id: Only return expenses belonging to the client with the given ID, defaults to None
+        :type client_id: int
+        :param project_id: Only return expenses belonging to the project with the given ID, defaults to None
+        :type project_id: int
+        :param is_billed: Pass true to only return expenses that have been invoiced and false to return expenses that have not been invoiced, defaults to None
+        :type is_billed: bool
+        :param updated_since: Only return expenses that have been updated since the given date and time, defaults to None
+        :type updated_since: datetime
+        :param from_date: Only return expenses with a spent_date on or after the given date, defaults to None
+        :type from_date: date
+        :param to_date: Only return expenses with a spent_date on or before the given date, defaults to None
+        :type to_date: date
+        :return: Return a list of client objects.
+        :rtype: list
+        """
+        baseurl = '/expenses?'
+        query_string = assemble_query_string(**kwargs)
+        url = f"{baseurl}{query_string}"
 
         return from_dict(data_class=Expenses, data=self._get(url))
 
@@ -492,15 +520,22 @@ class Harvest(object):
     def delete_expense(self, expense_id):
         self._delete('/expenses/{0}'.format(expense_id))
 
-    # TODO: ISSUE 15
-    def expense_categories(self, page=1, per_page=100, is_active=None, updated_since=None):
-        url = '/expense_categories?page={0}'.format(page)
-        url = '{0}&per_page={1}'.format(url, per_page)
-
-        if is_active is not None:
-            url = '{0}&is_active={1}'.format(url, is_active)
-        if updated_since is not None:
-            url = '{0}&updated_since={1}'.format(url, updated_since)
+    def expense_categories(self, **kwargs):
+        """
+        :param page: Page number to return, defaults to `1`
+        :type page: int
+        :param per_page: Number of expense categories to return per page, defaults to `100`
+        :type per_page: int
+        :param is_active: Include archived expense categories in return, defaults to `None`
+        :type is_active: bool or None
+        :param updated_since: Include expense categories updated since, defaults to `None`
+        :type updated_since: datetime or None
+        :return: Return a list of client objects.
+        :rtype: list
+        """
+        baseurl = '/expense_categories?'
+        query_string = assemble_query_string(**kwargs)
+        url = f"{baseurl}{query_string}"
 
         return from_dict(data_class=ExpenseCategories, data=self._get(url))
 
@@ -520,15 +555,22 @@ class Harvest(object):
         self._delete('/expense_categories/{0}'.format(expense_category_id))
 
     ## Tasks
-    # TODO: ISSUE 15
-    def tasks(self, page=1, per_page=100, is_active=None, updated_since=None):
-        url = '/tasks?page={0}'.format(page)
-        url = '{0}&per_page={1}'.format(url, per_page)
-
-        if is_active is not None:
-            url = '{0}&is_active={1}'.format(url, is_active)
-        if updated_since is not None:
-            url = '{0}&updated_since={1}'.format(url, updated_since)
+    def tasks(self, **kwargs):
+        """
+        :param page: Page number to return, defaults to `1`
+        :type page: int
+        :param per_page: Number of tasks to return per page, defaults to `100`
+        :type per_page: int
+        :param is_active: Include archived tasks in return, defaults to `None`
+        :type is_active: bool or None
+        :param updated_since: Include tasks updated since, defaults to `None`
+        :type updated_since: datetime or None
+        :return: Return a list of client objects.
+        :rtype: list
+        """
+        baseurl = '/tasks?'
+        query_string = assemble_query_string(**kwargs)
+        url = f"{baseurl}{query_string}"
 
         return from_dict(data_class=Tasks, data=self._get(url))
 
@@ -549,26 +591,38 @@ class Harvest(object):
 
     ## Time Entries
 
-    def time_entries(self, page=1, per_page=100, user_id=None, client_id=None, project_id=None, is_billed=None, is_running=None, updated_since=None, from_date=None, to_date=None):
-        url = '/time_entries?page={0}'.format(page)
-        url = '{0}&per_page={1}'.format(url, per_page)
-
-        if user_id is not None:
-            url = '{0}&user_id={1}'.format(url, user_id)
-        if client_id is not None:
-            url = '{0}&client_id={1}'.format(url, client_id)
-        if project_id is not None:
-            url = '{0}&project_id={1}'.format(url, project_id)
-        if is_billed is not None:
-            url = '{0}&is_billed={1}'.format(url, is_billed)
-        if is_running is not None:
-            url = '{0}&is_running={1}'.format(url, is_running)
-        if updated_since is not None:
-            url = '{0}&updated_since={1}'.format(url, updated_since)
-        if from_date is not None:
-            url = '{0}&from={1}'.format(url, from_date)
-        if to_date is not None:
-            url = '{0}&to={1}'.format(url, to_date)
+    def time_entries(self, **kwargs):
+        """
+        :param page: Page number to return, defaults to `1`
+        :type page: int
+        :param per_page: Number of tasks to return per page, defaults to `100`
+        :type per_page: int
+        :param user_id: Only return time entries belonging to the user with the given ID, defaults to `None`
+        :type user_id: int or None
+        :param client_id: Only return time entries belonging to the client with the given ID, defaults to `None`
+        :type client_id: int or None
+        :param project_id: Only return time entries belonging to the project with the given ID, defaults to `None`
+        :type project_id: int or None
+        :param task_id: Only return time entries belonging to the task with the given ID, defaults to `None`
+        :type task_id: int or None
+        :param external_reference_id: Only return time entries with the given external_reference ID, defaults to `None`
+        :type external_reference_id: string or None
+        :param is_billed: Pass true to only return time entries that have been invoiced and false to return time entries that have not been invoiced, defaults to `None`
+        :type is_billed: bool or None
+        :param is_running: Pass true to only return running time entries and false to return non-running time entries, defaults to `None`
+        :type is_running: bool or None
+        :param updated_since: Only return time entries that have been updated since the given date and time. Use the ISO 8601 Format, defaults to `None`
+        :type updated_since: datetime or None
+        :param from_date: Only return time entries with a spent_date on or after the given date, defaults to `None`
+        :type from_date: date or None
+        :param to_date: Only return time entries with a spent_date on or before the given date, defaults to `None`
+        :type to_date: date or None
+        :return: Return a list of client objects.
+        :rtype: list
+        """
+        baseurl = '/time_entries?'
+        query_string = assemble_query_string(**kwargs)
+        url = f"{baseurl}{query_string}"
 
         return from_dict(data_class=TimeEntries, data=self._get(url))
 
@@ -613,28 +667,41 @@ class Harvest(object):
         return from_dict(data_class=TimeEntry, data=self._patch('/time_entries/{0}/stop'.format(time_entry_id)))
 
     ## Projects
-    # TODO: ISSUE 15
-    def user_assignments(self, page=1, per_page=100, is_active=None, updated_since=None):
-        url = '/user_assignments?page={0}'.format(page)
-        url = '{0}&per_page={1}'.format(url, per_page)
-
-        if is_active is not None:
-            url = '{0}&is_active={1}'.format(url, is_active)
-        if updated_since is not None:
-            url = '{0}&updated_since={1}'.format(url, updated_since)
+    def user_assignments(self, **kwargs):
+        """
+        :param page: Page number to return, defaults to `1`
+        :type page: int
+        :param per_page: Number of user assignments to return per page, defaults to `100`
+        :type per_page: int
+        :param is_active: Include archived user assignments in return, defaults to `None`
+        :type is_active: bool or None
+        :param updated_since: Include user assignments updated since, defaults to `None`
+        :type updated_since: datetime or None
+        :return: Return a list of client objects.
+        :rtype: list
+        """
+        baseurl = '/user_assignments?'
+        query_string = assemble_query_string(**kwargs)
+        url = f"{baseurl}{query_string}"
 
         return from_dict(data_class=UserAssignments, data=self._get(url))
 
-    # TODO: ISSUE 15
-    def project_user_assignments(self, project_id, page=1, per_page=100, is_active=None, updated_since=None):
-        url = '/projects/{0}/user_assignments'.format(project_id)
-        url = '{0}?page={1}'.format(url, page)
-        url = '{0}&per_page={1}'.format(url, per_page)
-
-        if is_active is not None:
-            url = '{0}&is_active={1}'.format(url, is_active)
-        if updated_since is not None:
-            url = '{0}&updated_since={1}'.format(url, updated_since)
+    def project_user_assignments(self, project_id, **kwargs):
+        """
+        :param page: Page number to return, defaults to `1`
+        :type page: int
+        :param per_page: Number of project user assignments to return per page, defaults to `100`
+        :type per_page: int
+        :param is_active: Include archived project user assignments in return, defaults to `None`
+        :type is_active: bool or None
+        :param updated_since: Include project user assignments updated since, defaults to `None`
+        :type updated_since: datetime or None
+        :return: Return a list of client objects.
+        :rtype: list
+        """
+        baseurl = '/projects/{0}/user_assignments?'.format(project_id)
+        query_string = assemble_query_string(**kwargs)
+        url = f"{baseurl}{query_string}"
 
         return from_dict(data_class=UserAssignments, data=self._get(url))
 
@@ -653,28 +720,41 @@ class Harvest(object):
     def delete_user_assignment(self, project_id, user_assignment_id):
         self._delete('/projects/{0}/user_assignments/{1}'.format(project_id, user_assignment_id))
 
-    # TODO: ISSUE 15
-    def task_assignments(self, page=1, per_page=100, is_active=None, updated_since=None):
-        url = '/task_assignments?page={0}'.format(page)
-        url = '{0}&per_page={1}'.format(url, per_page)
-
-        if is_active is not None:
-            url = '{0}&is_active={1}'.format(url, is_active)
-        if updated_since is not None:
-            url = '{0}&updated_since={1}'.format(url, updated_since)
+    def task_assignments(self, **kwargs):
+        """
+        :param page: Page number to return, defaults to `1`
+        :type page: int
+        :param per_page: Number of assignments to return per page, defaults to `100`
+        :type per_page: int
+        :param is_active: Include archived assignments in return, defaults to `None`
+        :type is_active: bool or None
+        :param updated_since: Include assignments updated since, defaults to `None`
+        :type updated_since: datetime or None
+        :return: Return a list of client objects.
+        :rtype: list
+        """
+        baseurl = '/task_assignments?'
+        query_string = assemble_query_string(**kwargs)
+        url = f"{baseurl}{query_string}"
 
         return from_dict(data_class=TaskAssignments, data=self._get(url))
 
-    # TODO: ISSUE 15
-    def project_task_assignments(self, project_id, page=1, per_page=100, is_active=None, updated_since=None):
-        url = '/projects/{0}/task_assignments'.format(project_id)
-        url = '{0}?page={1}'.format(url, page)
-        url = '{0}&per_page={1}'.format(url, per_page)
-
-        if is_active is not None:
-            url = '{0}&is_active={1}'.format(url, is_active)
-        if updated_since is not None:
-            url = '{0}&updated_since={1}'.format(url, updated_since)
+    def project_task_assignments(self, project_id, **kwargs):
+        """
+        :param page: Page number to return, defaults to `1`
+        :type page: int
+        :param per_page: Number of task assignments to return per page, defaults to `100`
+        :type per_page: int
+        :param is_active: Include archived task assignments in return, defaults to `None`
+        :type is_active: bool or None
+        :param updated_since: Include task assignments updated since, defaults to `None`
+        :type updated_since: datetime or None
+        :return: Return a list of client objects.
+        :rtype: list
+        """
+        baseurl = '/projects/{0}/task_assignments?'.format(project_id)
+        query_string = assemble_query_string(**kwargs)
+        url = f"{baseurl}{query_string}"
 
         return from_dict(data_class=TaskAssignments, data=self._get(url))
 
@@ -699,17 +779,22 @@ class Harvest(object):
     def delete_task_assignment(self, project_id, task_assignment_id):
         self._delete('/projects/{0}/task_assignments/{1}'.format(project_id, task_assignment_id))
 
-    # TODO: ISSUE 15
-    def projects(self, page=1, per_page=100, client_id=None, is_active=None, updated_since=None):
-        url = '/projects?page={0}'.format(page)
-        url = '{0}&per_page={1}'.format(url, per_page)
-
-        if client_id is not None:
-            url = '{0}&client_id={1}'.format(url, client_id)
-        if is_active is not None:
-            url = '{0}&is_active={1}'.format(url, is_active)
-        if updated_since is not None:
-            url = '{0}&updated_since={1}'.format(url, updated_since)
+    def projects(self, **kwargs):
+        """
+        :param page: Page number to return, defaults to `1`
+        :type page: int
+        :param per_page: Number of projects to return per page, defaults to `100`
+        :type per_page: int
+        :param is_active: Include archived projects in return, defaults to `None`
+        :type is_active: bool or None
+        :param updated_since: Include projects updated since, defaults to `None`
+        :type updated_since: datetime or None
+        :return: Return a list of client objects.
+        :rtype: list
+        """
+        baseurl = '/projects?'
+        query_string = assemble_query_string(**kwargs)
+        url = f"{baseurl}{query_string}"
 
         return from_dict(data_class=Projects, data=self._get(url))
 
@@ -718,7 +803,7 @@ class Harvest(object):
 
     def create_project(self, client_id, name, is_billable, bill_by, budget_by, **kwargs):
         url = '/projects'
-        kwargs.update({'client_id': client_id, 'name': name, 'is_billable': is_billable, 'bill_by': bill_by, 'budget_by': budget_by})
+        kwargs.update({'client_id': client_id, 'name': name, 'is_billable': str(is_billable).lower(), 'bill_by': bill_by, 'budget_by': budget_by})
         return from_dict(data_class=Project, data=self._post(url, data=kwargs))
 
     def update_project(self, project_id, **kwargs):
@@ -802,15 +887,22 @@ class Harvest(object):
 
         return from_dict(data_class=ProjectAssignments, data=self._get(url))
 
-    # TODO: ISSUE 15
-    def users(self, page=1, per_page=100, is_active=None, updated_since=None):
-        url = '/users?page={0}'.format(page)
-        url = '{0}&per_page={1}'.format(url, per_page)
-
-        if is_active is not None:
-            url = '{0}&is_active={1}'.format(url, is_active)
-        if updated_since is not None:
-            url = '{0}&updated_since={1}'.format(url, updated_since)
+    def users(self, **kwargs):
+        """
+        :param page: Page number to return, defaults to `1`
+        :type page: int
+        :param per_page: Number of users to return per page, defaults to `100`
+        :type per_page: int
+        :param is_active: Include archived users in return, defaults to `None`
+        :type is_active: bool or None
+        :param updated_since: Include users updated since, defaults to `None`
+        :type updated_since: datetime or None
+        :return: Return a list of client objects.
+        :rtype: list
+        """
+        baseurl = '/users?'
+        query_string = assemble_query_string(**kwargs)
+        url = f"{baseurl}{query_string}"
 
         return from_dict(data_class=Users, data=self._get(url))
 

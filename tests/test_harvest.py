@@ -16,7 +16,7 @@ from datetime import datetime, timedelta, date
 
 sys.path.insert(0, sys.path[0]+"/..")
 
-from harvest import Harvest, HarvestError
+from harvest import Harvest, HarvestError, assemble_query_string
 from harvest.detailedreports import DetailedReports
 from harvest.harvestdataclasses import *
 
@@ -236,3 +236,21 @@ class TestHarvest(unittest.TestCase):
         self.assertTrue('The object you requested was found but you don’t have authorization to perform your request.' in str(context.exception))
 
         httpretty.reset()
+
+    def test_assemble_query_string_bool_lower(self):
+        target_query_string = "is_active=false&is_billed=true&page=1&per_page=100"
+        key_words = {"is_active":False, "is_billed":True}
+        query_string = assemble_query_string(**key_words)
+        self.assertEqual(query_string, target_query_string)
+
+    def test_assemble_query_string_page(self):
+        target_query_string = "page=10&per_page=100"
+        key_words = {'page':10}
+        query_string = assemble_query_string(**key_words)
+        self.assertEqual(query_string, target_query_string)
+
+    def test_assemble_query_string_per_page(self):
+        target_query_string = "per_page=10&page=1"
+        key_words = {'per_page':10}
+        query_string = assemble_query_string(**key_words)
+        self.assertEqual(query_string, target_query_string)
