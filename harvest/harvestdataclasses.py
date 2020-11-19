@@ -3,6 +3,7 @@
 
 from dataclasses import dataclass, field
 from typing import Optional, List
+from dataclasses_json import config, dataclass_json
 
 @dataclass
 class Auth:
@@ -168,7 +169,7 @@ class UserAssignment:
     hourly_rate: float = None
 
 @dataclass
-class Project:
+class ProjectRef:
     code: Optional[str]
     id: int = None
     name: str = None
@@ -179,7 +180,7 @@ class Expense:
     user: Optional[User]
     receipt: Optional[Receipt]
     invoice: Optional[InvoiceRef]
-    project: Optional[Project]
+    project: Optional[ProjectRef]
     notes: Optional[str]
     id: int = None
     total_cost: float = None
@@ -197,7 +198,7 @@ class Expense:
 
 @dataclass
 class LineItem:
-    project: Optional[Project]
+    project: Optional[ProjectRef]
     id: int = None
     kind: str = None
     description: str = None
@@ -207,24 +208,28 @@ class LineItem:
     taxed: bool = None
     taxed2: bool = None
 
+#https://stackoverflow.com/questions/60074344/reserved-word-as-an-attribute-name-in-a-dataclass-when-parsing-a-json-object
+@dataclass_json
 @dataclass
 class ExpenseImport:
+    to: Optional[str]
+    attach_receipts: Optional[bool]
+    from_date: Optional[str] = field(metadata=config(field_name="from"))
     summary_type: str
-    #from: str = None
-    to: str = None
-    attach_receipt: str = None
 
+#https://stackoverflow.com/questions/60074344/reserved-word-as-an-attribute-name-in-a-dataclass-when-parsing-a-json-object
+@dataclass_json
 @dataclass
 class TimeImport:
+    to: Optional[str]
+    from_date: Optional[str] = field(metadata=config(field_name="from"))
     summary_type: str
-    #from: str = None
-    to: str = None
 
 @dataclass
 class LineItemImport:
     time: Optional[TimeImport]
     expenses: Optional[ExpenseImport]
-    project_ids: List[Project]
+    project_ids: List[int]
 
 @dataclass
 class Creator:
@@ -296,38 +301,39 @@ class Invoice:
 @dataclass
 class FreeFormInvoice:
     notes: Optional[str]
+    retainer_id: Optional[int]
+    estimate_id: Optional[int]
+    number: Optional[str]
+    purchase_order: Optional[str]
+    tax: Optional[float]
+    tax2: Optional[float]
+    discount: Optional[float]
+    subject: Optional[str]
+    currency: Optional[str]
+    issue_date: Optional[str]
+    due_date: Optional[str]
+    payment_term: Optional[str]
+    line_items: Optional[List[LineItem]]
     client_id: int
-    retainer_id: int = None
-    estimate_id: int = None
-    number: str = None
-    purchase_order: str = None
-    tax: float = None
-    tax2: float = None
-    discount: float = None
-    subject: str = None
-    currency: str = None
-    issue_date: str = None
-    due_date: str = None
-    payment_term: str = None
-    line_items: List[LineItem] = None
 
+@dataclass_json
 @dataclass
 class InvoiceImport:
     notes: Optional[str]
     line_items_import: Optional[LineItemImport]
+    subject: Optional[str]
+    retainer_id: Optional[int]
+    estimate_id: Optional[int]
+    number: Optional[str]
+    purchase_order: Optional[str]
+    tax: Optional[float]
+    tax2: Optional[float]
+    discount: Optional[float]
+    currency: Optional[str]
+    issue_date: Optional[str]
+    due_date: Optional[str]
+    payment_term: Optional[str]
     client_id: int
-    retainer_id: int = None
-    estimate_id: int = None
-    number: str = None
-    purchase_order: str = None
-    tax: float = None
-    tax2: float = None
-    discount: float = None
-    subject: str = None
-    currency: str = None
-    issue_date: str = None
-    due_date: str = None
-    payment_term: str = None
 
 @dataclass
 class ClientContact:
@@ -461,7 +467,7 @@ class TaskAssignment:
     is_active: bool = None
     created_at: str = None
     updated_at: str = None
-    project: Project = None
+    project: ProjectRef = None
     task: TaskAssignmentRef = None
 
 @dataclass
@@ -473,7 +479,7 @@ class UserAssignment:
     is_active: bool = None
     created_at: str = None
     updated_at: str = None
-    project: Project = None
+    project: ProjectRef = None
     user: User = None
 
 @dataclass
@@ -509,7 +515,7 @@ class TimeEntry:
     spent_date: str = None
     user: User = None
     client: Client = None
-    project: Project = None
+    project: ProjectRef = None
     task: Task = None
     user_assignment: UserAssignment = None
     task_assignment: ProjectTaskAssignments = None

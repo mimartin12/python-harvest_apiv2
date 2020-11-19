@@ -692,6 +692,28 @@ class TestInvoices(unittest.TestCase):
         requested_invoice = self.harvest.get_invoice(invoice_id= 13150378)
         self.assertEqual(requested_invoice, invoice)
 
+        #create_free_form_invoice
+        httpretty.register_uri(httpretty.POST,
+                "https://api.harvestapp.com/api/v2/invoices",
+                body=json.dumps(invoice_13150453_dict),
+                status=200
+            )
+        created_invoice = from_dict(data_class=Invoice, data=invoice_13150453_dict)
+        free_form_invoice = from_dict(data_class=FreeFormInvoice, data={"client_id":5735774,"subject":"ABC Project Quote","due_date":"2017-07-27","line_items":[{"kind":"Service","description":"ABC Project","unit_price":5000.0}]})
+        requested_created_invoice = self.harvest.create_free_form_invoice(free_form_invoice)
+        self.assertEqual(requested_created_invoice, created_invoice)
+
+        #create_invoice_based_on_tracked_time_and_expenses
+        httpretty.register_uri(httpretty.POST,
+                "https://api.harvestapp.com/api/v2/invoices",
+                body=json.dumps(invoice_13150453_dict),
+                status=200
+            )
+        created_invoice = from_dict(data_class=Invoice, data=invoice_13150453_dict)
+        import_invoice = from_dict(data_class=InvoiceImport, data={"client_id":5735774, "subject":"ABC Project Quote","payment_term":"upon receipt","line_items_import":{"project_ids":[14307913],"time":{"summary_type":"task","from":"2017-03-01","to":"2017-03-31"},"expenses":{"summary_type":"category"}}})
+        requested_created_invoice = self.harvest.create_invoice_based_on_tracked_time_and_expenses(import_invoice)
+        self.assertEqual(requested_created_invoice, created_invoice)
+
         # create_invoice
         httpretty.register_uri(httpretty.POST,
                 "https://api.harvestapp.com/api/v2/invoices",
@@ -750,6 +772,7 @@ class TestInvoices(unittest.TestCase):
         updated_invoice = from_dict(data_class=Invoice, data=invoice_13150453_dict)
         requested_updated_invoice = self.harvest.update_invoice_line_item(invoice_id= 13150453, line_item = {"id":53341928,"description":"ABC Project Phase 2","unit_price":5000.0})
         self.assertEqual(requested_created_invoice, created_invoice)
+
 
         # delete_invoice_line_items
         del(invoice_13150453_dict['line_items'][1])

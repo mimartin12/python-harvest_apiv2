@@ -3,3 +3,4 @@ requests-oauthlib
 dacite
 configparser
 httpretty
+dataclasses_json

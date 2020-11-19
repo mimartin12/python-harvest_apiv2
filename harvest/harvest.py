@@ -232,12 +232,18 @@ class Harvest(object):
         kwargs.update({'client_id': client_id})
         return from_dict(data_class=Invoice, data=self._post(url, data=kwargs))
 
-    # invoice is a dataclass invoice
-    def create_free_form_invoice(self, client_id, free_form_invoice):
-        return self.create_invoice(client_id, free_form_invoice)
+    def create_free_form_invoice(self, invoice : FreeFormInvoice):
+        invoice_dict = asdict(invoice)
+        client_id = invoice_dict['client_id']
+        invoice_dict.pop('client_id', None)
+        return self.create_invoice(client_id, **invoice_dict)
 
-    def create_invoice_based_on_tracked_time_and_expenses(self, client_id, invoice_import):
-        return self.create_free_form_invoice(client_id, invoice_import)
+    def create_invoice_based_on_tracked_time_and_expenses(self, invoice : InvoiceImport):
+        # translates from_date to from
+        invoice_dict = json.loads(invoice.to_json())
+        client_id = invoice_dict['client_id']
+        invoice_dict.pop('client_id', None)
+        return self.create_invoice(client_id, **invoice_dict)
 
     # line_items is a list of LineItem
     def update_invoice(self, invoice_id, **kwargs):
