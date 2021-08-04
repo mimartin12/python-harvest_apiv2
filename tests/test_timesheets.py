@@ -11,6 +11,7 @@ import httpretty
 import warnings
 from dacite import from_dict
 import json
+from datetime import datetime
 
 sys.path.insert(0, sys.path[0]+"/..")
 
@@ -494,6 +495,22 @@ class TestTimesheets(unittest.TestCase):
                         "last":"https://api.harvestapp.com/v2/time_entries?page=1&per_page=100"
                     }
             }
+        
+        time_entries_dict_from_to = {
+                "time_entries":[time_entry_636709355_dict, time_entry_636708723_dict, time_entry_636708574_dict, time_entry_636707831_dict],
+                "per_page":100,
+                "total_pages":1,
+                "total_entries":4,
+                "next_page":None,
+                "previous_page":None,
+                "page":1,
+                "links":{
+                        "first":"https://api.harvestapp.com/v2/time_entries?from=1969-01-01&to=1969-12-31&page=1&per_page=100",
+                        "next":None,
+                        "previous":None,
+                        "last":"https://api.harvestapp.com/v2/time_entries?from=1969-01-01&to=1969-12-31&page=1&per_page=100"
+                    }
+            }
 
         company_dict = {
                 "base_uri":"https://{ACCOUNT_SUBDOMAIN}.harvestapp.com",
@@ -523,6 +540,17 @@ class TestTimesheets(unittest.TestCase):
         time_entries = from_dict(data_class=TimeEntries, data=time_entries_dict)
         requested_time_entries = self.harvest.time_entries()
         self.assertEqual(requested_time_entries, time_entries)
+        
+        # time_entries with specific from and to dates.
+        httpretty.register_uri(httpretty.GET,
+                "https://api.harvestapp.com/api/v2/time_entries?from=1969-01-01&to=1969-12-31&page=1&per_page=100",
+                body=json.dumps(time_entries_dict_from_to),
+                status=200
+            )
+        from_date = datetime.strptime('1969-01-01 00:00:00.000000', '%Y-%m-%d %H:%M:%S.%f').date()
+        to_date = datetime.strptime('1969-12-31 23:59:59.999999', '%Y-%m-%d %H:%M:%S.%f').date()
+        self.harvest.time_entries(from_date=from_date, to_date=to_date)
+        self.assertEqual(httpretty.latest_requests()[-1].url, 'https://api.harvestapp.com/api/v2/time_entries?from=1969-01-01&to=1969-12-31&page=1&per_page=100')
 
         # get_time_entry
         httpretty.register_uri(httpretty.GET,

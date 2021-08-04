@@ -11,6 +11,7 @@ import httpretty
 import warnings
 from dacite import from_dict
 import json
+from datetime import datetime
 
 sys.path.insert(0, sys.path[0]+"/..")
 
@@ -230,6 +231,22 @@ class TestExpenses(unittest.TestCase):
             }
         }
 
+        expenses_dict_from_to = {
+        "expenses":[expense_15296442_dict, expense_15296423_dict],
+        "per_page":100,
+        "total_pages":1,
+        "total_entries":2,
+        "next_page":None,
+        "previous_page":None,
+        "page":1,
+        "links":{
+                "first":"https://api.harvestapp.com/v2/expenses?from=1969-01-01&to=1969-12-31&page=1&per_page=100",
+                "next":None,
+                "previous":None,
+                "last":"https://api.harvestapp.com/v2/expenses?from=1969-01-01&to=1969-12-31&page=1&per_page=100"
+            }
+        }
+
         # expenses
         httpretty.register_uri(httpretty.GET,
                 "https://api.harvestapp.com/api/v2/expenses?page=1&per_page=100",
@@ -239,6 +256,17 @@ class TestExpenses(unittest.TestCase):
         expenses = from_dict(data_class=Expenses, data=expenses_dict)
         requested_expenses = self.harvest.expenses()
         self.assertEqual(requested_expenses, expenses)
+
+        # expenses with from_date and to_date
+        httpretty.register_uri(httpretty.GET,
+                "https://api.harvestapp.com/api/v2/expenses?from=1969-01-01&to=1969-12-31&page=1&per_page=100",
+                body=json.dumps(expenses_dict_from_to),
+                status=200
+            )
+        from_date = datetime.strptime('1969-01-01 00:00:00.000000', '%Y-%m-%d %H:%M:%S.%f').date()
+        to_date = datetime.strptime('1969-12-31 23:59:59.999999', '%Y-%m-%d %H:%M:%S.%f').date()
+        self.harvest.expenses(from_date=from_date, to_date=to_date)
+        self.assertEqual(httpretty.latest_requests()[-1].url, 'https://api.harvestapp.com/api/v2/expenses?from=1969-01-01&to=1969-12-31&page=1&per_page=100')
 
         # get_expense
         httpretty.register_uri(httpretty.GET,
