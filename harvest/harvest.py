@@ -21,14 +21,14 @@ except ImportError:
 
 def assemble_query_string(**kwargs):
     query_string = list()
-    
+
     if not 'page' in kwargs:
         kwargs['page'] = 1
 
     if not 'per_page' in kwargs:
         kwargs['per_page'] = 100
 
-    for k,v in kwargs.items():
+    for k, v in kwargs.items():
         if v is None:
             continue
         elif type(v) is bool:
@@ -489,6 +489,15 @@ class Harvest(object):
         :rtype: list
         """
         baseurl = '/expenses?'
+
+        from_date = kwargs.pop("from_date", None)
+        if from_date is not None:
+            kwargs["from"] = from_date
+
+        to_date = kwargs.pop("to_date", None)
+        if to_date is not None:
+            kwargs["to"] = to_date
+
         query_string = assemble_query_string(**kwargs)
         url = f"{baseurl}{query_string}"
 
@@ -627,6 +636,15 @@ class Harvest(object):
         :rtype: list
         """
         baseurl = '/time_entries?'
+
+        from_date = kwargs.pop("from_date", None)
+        if from_date is not None:
+            kwargs["from"] = from_date
+
+        to_date = kwargs.pop("to_date", None)
+        if to_date is not None:
+            kwargs["to"] = to_date
+            
         query_string = assemble_query_string(**kwargs)
         url = f"{baseurl}{query_string}"
 
