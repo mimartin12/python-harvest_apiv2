@@ -6,6 +6,11 @@
 ![License](https://img.shields.io/pypi/l/python-harvest_apiv2.svg?style=flat)
 ![Versions](https://img.shields.io/pypi/pyversions/python-harvest_apiv2.svg?style=flat)
 
+Version 1.11.0 will be the last open source build.
+
+Version 1.12.0 will be sold on the following e-commerce website:-
+https://dachshund-turbot-6p52.squarespace.com/
+
 
 ### Installation
 
