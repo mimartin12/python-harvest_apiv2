@@ -1021,8 +1021,9 @@ class Harvest(object):
             del(kwargs['headers']['Content-Type'])
             kwargs['files'] = files
             kwargs['data'] = data
-        else:
+        if data is not None:
             kwargs['data'] = json.dumps(data)
+            
 
         requestor = requests
 
@@ -1084,4 +1085,4 @@ class Harvest(object):
             return resp
 
         else:
-            raise HarvestError('Unsupported HTTP response code. {0} {1}'.format(resp.status_code, resp.url))
+            raise HarvestError('Unsupported HTTP response code. {0} {1} {2}'.format(resp.status_code, resp.url, resp.text))
